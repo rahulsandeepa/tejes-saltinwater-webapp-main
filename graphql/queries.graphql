@@ -1,0 +1,338 @@
+#import "./fragments.graphql"
+
+query ProductMany(
+  $before: String
+  $after: String
+  $channel: String
+  $filter: ProductFilterInput
+) {
+  products(
+    first: 50
+    channel: $channel
+    after: $after
+    before: $before
+    filter: $filter
+  ) {
+    totalCount
+    edges {
+      node {
+        ...ProductCardFragment
+      }
+    }
+  }
+}
+
+query CollectionMany(
+  $before: String
+  $after: String
+  $channel: String
+  $filter: CollectionFilterInput
+) {
+  collections(
+    first: 50
+    channel: $channel
+    after: $after
+    before: $before
+    filter: $filter
+  ) {
+    totalCount
+    edges {
+      node {
+        ...CollectionBasicFragment
+        products(first: 50) {
+          edges {
+            node {
+              ...ProductCardFragment
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query ProductBySlug($slug: String!, $channel: String) {
+  product(slug: $slug, channel: $channel) {
+    ...ProductDetailsFragment
+  }
+}
+
+query CheckoutByToken($checkoutToken: UUID!) {
+  checkout(token: $checkoutToken) {
+    ...CheckoutDetailsFragment
+  }
+}
+
+query Orders($before: String, $after: String) {
+  me {
+    orders(first: 10, before: $before, after: $after) {
+      edges {
+        cursor
+        node {
+          ...OrderDetailsFragment
+        }
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      totalCount
+    }
+  }
+}
+
+mutation CheckoutAttach($checkoutId: ID, $checkoutToken: UUID) {
+  checkoutCustomerAttach(checkoutId: $checkoutId, token: $checkoutToken) {
+    errors {
+      message
+    }
+    checkout {
+      id
+    }
+  }
+}
+
+mutation CreateCheckout(
+  $email: String!
+  $lines: [CheckoutLineInput!]!
+  $channel: String
+) {
+  checkoutCreate(input: { channel: $channel, email: $email, lines: $lines }) {
+    checkout {
+      id
+      token
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation AddProductToCart($checkoutToken: UUID!, $variantId: ID!) {
+  checkoutLinesAdd(
+    token: $checkoutToken
+    lines: [{ quantity: 1, variantId: $variantId }]
+  ) {
+    checkout {
+      ...CheckoutDetailsFragment
+    }
+    errors {
+      message
+      code
+    }
+  }
+}
+
+mutation RemoveProductFromCheckout($checkoutToken: UUID!, $lineId: ID!) {
+  checkoutLineDelete(token: $checkoutToken, lineId: $lineId) {
+    checkout {
+      ...CheckoutDetailsFragment
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+
+mutation CheckoutBillingAddressUpdate($token: UUID!, $address: AddressInput!) {
+  checkoutBillingAddressUpdate(billingAddress: $address, token: $token) {
+    checkout {
+      ...CheckoutDetailsFragment
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation checkoutComplete($checkoutToken: UUID!, $paymentData: JSONString) {
+  checkoutComplete(token: $checkoutToken, paymentData: $paymentData) {
+    order {
+      id
+      status
+      token
+      billingAddress {
+        id
+        ...AddressDetailsFragment
+      }
+      shippingAddress {
+        id
+        ...AddressDetailsFragment
+      }
+    }
+    confirmationNeeded
+    confirmationData
+    errors {
+      field
+      message
+      variants
+      addressType
+    }
+  }
+}
+
+mutation CheckoutShippingMethodUpdate($token: UUID!, $shippingMethodId: ID!) {
+  checkoutShippingMethodUpdate(
+    shippingMethodId: $shippingMethodId
+    token: $token
+  ) {
+    checkout {
+      ...CheckoutDetailsFragment
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+query AvailableShippingMethods($channel: String!) {
+  shop {
+    availableShippingMethods(channel: $channel) {
+      id
+      name
+      price {
+        ...PriceFragment
+      }
+    }
+  }
+}
+
+mutation CheckoutEmailUpdate($token: UUID!, $email: String!) {
+  checkoutEmailUpdate(email: $email, token: $token) {
+    checkout {
+      ...CheckoutDetailsFragment
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+
+mutation CheckoutShippingAddressUpdate($token: UUID!, $address: AddressInput!) {
+  checkoutShippingAddressUpdate(shippingAddress: $address, token: $token) {
+    checkout {
+      ...CheckoutDetailsFragment
+    }
+    errors {
+      field
+      message
+      code
+    }
+  }
+}
+
+query OrderDetailsQuery($token: UUID!) {
+  orderByToken(token: $token) {
+    id
+    number
+    shippingPrice {
+      gross {
+        ...PriceFragment
+      }
+    }
+    created
+    lines {
+      id
+      thumbnail {
+        ...ImageFragment
+      }
+      totalPrice {
+        gross {
+          ...PriceFragment
+        }
+      }
+      productName
+      variantName
+      quantity
+    }
+    total {
+      gross {
+        ...PriceFragment
+      }
+    }
+    statusDisplay
+    metadata {
+      key
+      value
+    }
+  }
+}
+
+mutation checkoutPaymentCreate(
+  $checkoutToken: UUID!
+  $paymentInput: PaymentInput!
+) {
+  checkoutPaymentCreate(token: $checkoutToken, input: $paymentInput) {
+    payment {
+      id
+      total {
+        ...PriceFragment
+      }
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+
+mutation updateCheckoutMetadata($id: ID!, $input: [MetadataInput!]!) {
+  updateMetadata(id: $id, input: $input) {
+    item {
+      metadata {
+        key
+        value
+      }
+    }
+  }
+}
+
+mutation CheckoutAddPromoCode(
+  $checkoutId: ID
+  $checkoutToken: UUID
+  $promoCode: String!
+) {
+  checkoutAddPromoCode(
+    checkoutId: $checkoutId
+    token: $checkoutToken
+    promoCode: $promoCode
+  ) {
+    checkout {
+      ...CheckoutDetailsFragment
+    }
+    errors {
+      message
+      field
+    }
+  }
+}
+
+mutation CheckoutRemovePromoCode(
+  $checkoutId: ID
+  $checkoutToken: UUID
+  $promoCode: String!
+) {
+  checkoutRemovePromoCode(
+    checkoutId: $checkoutId
+    token: $checkoutToken
+    promoCode: $promoCode
+  ) {
+    checkout {
+      ...CheckoutDetailsFragment
+    }
+    errors {
+      message
+      field
+    }
+  }
+}

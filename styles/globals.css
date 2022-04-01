@@ -1,0 +1,98 @@
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+html,
+body {
+  @apply font-quattro bg-skin-primary transition-colors;
+}
+
+:root {
+  --color-black: 0, 0, 0;
+  --color-white: 255, 255, 255;
+
+  --color-background-thick: #fff;
+  --color-background: #f9fafb;
+  --color-background-muted: #e5e7eb;
+  --color-text: #1f2937;
+  --color-light: #e5e7eb;
+  --color-text-muted: #6b7280;
+  --color-text-hover: #4b5563;
+
+  --color-accent-light: #38bdf8;
+  --color-accent: #0284c7;
+  --color-accent-muted: #bae6fd;
+  --color-accent-hover: #0369a1;
+  --color-accent-thick: #075985;
+
+  --color-error: #dc2626;
+  --color-selection: #8b5cf6;
+
+  --header-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.dark {
+  --color-black: 0, 0, 0;
+  --color-white: 255, 255, 255;
+
+  --color-background-thick: #020203;
+  --color-background: #111827;
+  --color-background-muted: #374151;
+  --color-text: #f9fafb;
+  --color-light: #4b5563;
+  --color-text-muted: #d1d5db;
+  --color-text-hover: #e5e7eb;
+
+  --color-accent-light: #7dd3fc;
+  --color-accent: #0ea5e9;
+  --color-accent-muted: #bae6fd;
+  --color-accent-hover: #0284c7;
+  --color-accent-thick: #0369a1;
+
+  --color-error: #ef4444;
+  --color-selection: #fcd34d;
+
+  --header-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.1),
+    0 2px 4px -1px rgba(255, 255, 255, 0.1);
+}
+
+.slide-track {
+  animation: scroll 40s linear infinite;
+  width: calc(320px * 10);
+}
+
+@keyframes scroll {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(calc(-320px * 5), 0);
+  }
+}
+
+.slick-prev {
+  z-index: 10;
+  left: 25px !important;
+}
+
+.slick-next {
+  z-index: 10;
+  right: 25px !important;
+}
+
+.slick-prev:before,
+.slick-next:before {
+  font-size: 2rem !important;
+}
+
+.slick-dots li.slick-active button:before {
+  color: var(--color-accent) !important;
+}
+
+.slick-dots li button:before {
+  color: var(--color-accent-muted) !important;
+  font-size: 0.5rem !important;
+  opacity: 1 !important;
+  bottom: 25px !important;
+}

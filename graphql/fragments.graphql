@@ -1,0 +1,220 @@
+fragment ImageFragment on Image {
+  url
+  alt
+}
+
+fragment PriceFragment on Money {
+  currency
+  amount
+  localizedAmount @client
+}
+
+fragment CollectionBasicFragment on Collection {
+  id
+  name
+}
+
+fragment ProductCardFragment on Product {
+  id
+  name
+  description
+  slug
+  variants {
+    id
+  }
+  media {
+    url
+  }
+  pricing {
+    priceRange {
+      start {
+        net {
+          ...PriceFragment
+        }
+      }
+    }
+  }
+}
+
+fragment ProductMediaFragment on ProductMedia {
+  url
+  alt
+  type
+}
+
+fragment CategoryBasicFragment on Category {
+  id
+  name
+  slug
+}
+
+fragment ProductDetailsFragment on Product {
+  id
+  name
+  slug
+  description
+  seoDescription
+  seoTitle
+  isAvailableForPurchase
+  category {
+    ...CategoryBasicFragment
+  }
+  variants {
+    id
+    name
+    quantityAvailable
+  }
+  pricing {
+    priceRange {
+      start {
+        gross {
+          ...PriceFragment
+        }
+      }
+    }
+  }
+  media {
+    ...ProductMediaFragment
+  }
+  thumbnail {
+    ...ImageFragment
+  }
+  category {
+    name
+  }
+}
+
+fragment CheckoutLineDetailsFragment on CheckoutLine {
+  id
+  quantity
+  totalPrice {
+    gross {
+      ...PriceFragment
+    }
+  }
+  variant {
+    id
+    product {
+      id
+      name
+      slug
+      thumbnail {
+        ...ImageFragment
+      }
+    }
+    pricing {
+      price {
+        gross {
+          ...PriceFragment
+        }
+      }
+    }
+    name
+  }
+}
+
+fragment AddressDetailsFragment on Address {
+  id
+  phone
+  firstName
+  lastName
+  streetAddress1
+  city
+  postalCode
+  isDefaultBillingAddress
+  isDefaultShippingAddress
+  country {
+    code
+    country
+  }
+}
+
+fragment DeliveryMethodFragment on ShippingMethod {
+  id
+  name
+  price {
+    ...PriceFragment
+  }
+  minimumDeliveryDays
+  maximumDeliveryDays
+}
+
+fragment CheckoutDetailsFragment on Checkout {
+  id
+  token
+  email
+  billingAddress {
+    ...AddressDetailsFragment
+  }
+  shippingAddress {
+    ...AddressDetailsFragment
+  }
+  shippingMethod {
+    ...DeliveryMethodFragment
+  }
+  isShippingRequired
+  availableShippingMethods {
+    ...DeliveryMethodFragment
+  }
+  lines {
+    ...CheckoutLineDetailsFragment
+  }
+  discount {
+    ...PriceFragment
+  }
+  discountName
+  translatedDiscountName
+  voucherCode
+  subtotalPrice {
+    net {
+      ...PriceFragment
+    }
+    tax {
+      ...PriceFragment
+    }
+  }
+  totalPrice {
+    gross {
+      ...PriceFragment
+    }
+  }
+}
+
+fragment OrderDetailsFragment on Order {
+  id
+  token
+  created
+  number
+  status
+  lines {
+    ...OrderLineDetailsFragment
+  }
+  total {
+    currency
+    gross {
+      ...PriceFragment
+    }
+    net {
+      ...PriceFragment
+    }
+  }
+}
+
+fragment OrderLineDetailsFragment on OrderLine {
+  id
+  productName
+  isShippingRequired
+  quantity
+  thumbnail {
+    ...ImageFragment
+  }
+  totalPrice {
+    currency
+    gross {
+      ...PriceFragment
+    }
+    net {
+      ...PriceFragment
+    }
+  }
+}
