@@ -54,6 +54,10 @@ const ContactInformation = ({ customer }: any) => {
     }
   }
 
+  function handleClick(e) {
+    e.preventDefault();
+    setDisabled(false);
+    }
   return (
     <form onSubmit={attachEmailAddress} className="px-2 py-6 md:py-10">
       <div className="bg-skin-primary-muted rounded-lg p-6 flex items-center sm:p-10">
@@ -86,7 +90,7 @@ const ContactInformation = ({ customer }: any) => {
             <div className="mt-3 sm:flex-shrink-0 sm:mt-0 sm:ml-4">
               {disabled ? (
                 <button
-                  onClick={() => setDisabled(false)}
+                 onClick={handleClick}
                   className="w-full bg-skin-accent rounded-md shadow-sm py-2 px-4 flex items-center justify-center text-base font-medium text-white hover:bg-skin-accent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-skin-accent"
                 >
                   Edit

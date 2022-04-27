@@ -47,6 +47,12 @@ const BillingInformation = () => {
       setDisabled(true)
     }
   }
+  
+  function handleClick(e) {
+    e.preventDefault();
+    setDisabled(false);
+    }
+
   return (
     <form onSubmit={updateAddress} className="px-2 py-6 md:py-10">
       <h2 className="text-lg font-medium text-skin-secondary">
@@ -247,7 +253,7 @@ const BillingInformation = () => {
         )}
         {disabled ? (
           <button
-            onClick={() => setDisabled(false)}
+            onClick={handleClick}
             className="col-span-2 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-skin-white bg-skin-accent hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-skin-accent"
           >
             Edit
